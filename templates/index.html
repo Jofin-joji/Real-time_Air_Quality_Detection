@@ -3,31 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQI Dashboard</title>
+    <title>AQI Monitoring</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 50px;
+            background-color: #f4f4f4;
         }
-        h1 { color: #333; }
-        #aqi { font-size: 40px; color: #FF5722; }
+        h1 {
+            color: #333;
+        }
+        .data-box {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .aqi {
+            font-size: 50px;
+            font-weight: bold;
+            color: #d9534f;
+        }
     </style>
-    <script>
-        function refreshAQI() {
-            fetch('/')
-                .then(response => response.text())
-                .then(html => {
-                    document.open();
-                    document.write(html);
-                    document.close();
-                });
-        }
-        setInterval(refreshAQI, 5000);  // Refresh every 5 seconds
-    </script>
 </head>
 <body>
-    <h1>Real-Time AQI Monitoring</h1>
-    <h2>AQI Value: <span id="aqi">{{ aqi if aqi else 'Waiting for data...' }}</span></h2>
+    <h1>Real-Time Air Quality Index (AQI)</h1>
+    <div class="data-box">
+        <p><strong>PM2.5:</strong> <span id="pm25">-</span></p>
+        <p><strong>PM10:</strong> <span id="pm10">-</span></p>
+        <p><strong>NOx:</strong> <span id="nox">-</span></p>
+        <p><strong>Benzene:</strong> <span id="benzene">-</span></p>
+        <p><strong>NH3:</strong> <span id="nh3">-</span></p>
+        <p><strong>CO:</strong> <span id="co">-</span></p>
+        <p><strong>Predicted AQI:</strong> <span class="aqi" id="aqi">-</span></p>
+    </div>
+
+    <script>
+        function fetchAQI() {
+            fetch('/get-latest-aqi')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('pm25').textContent = data["PM2.5"] || "-";
+                    document.getElementById('pm10').textContent = data["PM10"] || "-";
+                    document.getElementById('nox').textContent = data.NOx || "-";
+                    document.getElementById('benzene').textContent = data.Benzene || "-";
+                    document.getElementById('nh3').textContent = data.NH3 || "-";
+                    document.getElementById('co').textContent = data.CO || "-";
+                    document.getElementById('aqi').textContent = data["Predicted AQI"] || "-";
+                })
+                .catch(error => console.error("Error fetching AQI:", error));
+        }
+
+        // Refresh data every 10 seconds
+        setInterval(fetchAQI, 10000);
+        fetchAQI(); // Load data on first page load
+    </script>
 </body>
 </html>
