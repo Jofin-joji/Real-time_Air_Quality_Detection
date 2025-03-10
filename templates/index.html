@@ -3,62 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQI Monitoring</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        .data-box {
-            background: white;
-            padding: 20px;
-            margin: 20px auto;
-            width: 50%;
-            border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        .aqi {
-            font-size: 50px;
-            font-weight: bold;
-            color: #d9534f;
-        }
-    </style>
+    <title>Air Quality Monitoring</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <h1>Real-Time Air Quality Index (AQI)</h1>
-    <div class="data-box">
-        <p><strong>PM2.5:</strong> <span id="pm25">-</span></p>
-        <p><strong>PM10:</strong> <span id="pm10">-</span></p>
-        <p><strong>NOx:</strong> <span id="nox">-</span></p>
-        <p><strong>Benzene:</strong> <span id="benzene">-</span></p>
-        <p><strong>NH3:</strong> <span id="nh3">-</span></p>
-        <p><strong>CO:</strong> <span id="co">-</span></p>
-        <p><strong>Predicted AQI:</strong> <span class="aqi" id="aqi">-</span></p>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <img src="{{ url_for('static', filename='Airco_logo.png') }}" alt="AIRCO Logo">
+            <h1>Smart Air Quality Monitoring System</h1>
+        </div>
+
+        <!-- Location Section -->
+        <div class="location-section">
+            <img src="{{ url_for('static', filename='ASIET.jpg') }}" alt="ASIET">
+            <div class="location-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>KALADY,KERALA</span>
+                <p>INDIA</p>
+            </div>
+        </div>
+
+        <!-- Current Air Quality Section -->
+        <div class="current-aqi-section">
+            <h2>Current Air Quality</h2>
+            <p>Real-time AQI measurement</p>
+            <div class="aqi-display">
+                <div id="aqi-value">--</div>
+                <div id="aqi-description">--</div>
+            </div>
+            <div class="aqi-progress-bar">
+                <div class="progress" id="aqi-progress"></div>
+            </div>
+            <div class="aqi-scale">
+                <span>0</span>
+                <span>50</span>
+                <span>100</span>
+                <span>150</span>
+                <span>200</span>
+                <span>300+</span>
+            </div>
+            <div class="aqi-categories">
+                <div class="category good">Good<br>0-50</div>
+                <div class="category moderate">Moderate<br>51-100</div>
+                <div class="category poor">Poor<br>101-150</div>
+                <div class="category very-poor">Very Poor<br>151-200</div>
+                <div class="category hazardous">Hazardous<br>201+</div>
+            </div>
+            <div class="info-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+        </div>
+
+        <!-- Sensor Data Section -->
+        <div class="sensor-data-section">
+            <div class="data-item">
+                <i class="fas fa-thermometer-half"></i>
+                <span class="label">Temperature</span>
+                <span id="temperature">-- °C</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-tint"></i>
+                <span class="label">Humidity</span>
+                <span id="humidity">-- %</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-compress"></i>
+                <span class="label">Pressure</span>
+                <span id="pressure">-- hPa</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-leaf"></i>
+                <span class="label">PM2.5</span>
+                <span id="pm25">-- μg/m³</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-tree"></i>
+                <span class="label">PM10</span>
+                <span id="pm10">-- μg/m³</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-cloud"></i>
+                <span class="label">NH3</span>
+                <span id="nh3">-- ppm</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-cloud"></i>
+                <span class="label">Benzene</span>
+                <span id="benzene">-- ppm</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-fire"></i>
+                <span class="label">CO</span>
+                <span id="co">-- ppm</span>
+            </div>
+            <div class="data-item">
+                <i class="fas fa-bolt"></i>
+                <span class="label">NOx</span>
+                <span id="no2">-- ppm</span>
+            </div>
+        </div>
+
+
+        <!-- AQI Prediction Section -->
+        <div class="aqi-prediction-section">
+            <h2>AQI Prediction (1 Hour)</h2>
+            <div id="aqi-prediction-value">--</div>
+            <div id="aqi-prediction-confidence">--</div>
+        </div>
+
+        <!-- 7-Day AQI Forecast Section -->
+        <div class="forecast-section">
+            <h2>7-Day AQI Forecast</h2>
+            <div class="forecast-container" id="forecast-container">
+                <!-- Forecast days will be dynamically added here -->
+            </div>
+        </div>
     </div>
-
-    <script>
-        function fetchAQI() {
-            fetch('/get-latest-aqi')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('pm25').textContent = data["PM2.5"] || "-";
-                    document.getElementById('pm10').textContent = data["PM10"] || "-";
-                    document.getElementById('nox').textContent = data.NOx || "-";
-                    document.getElementById('benzene').textContent = data.Benzene || "-";
-                    document.getElementById('nh3').textContent = data.NH3 || "-";
-                    document.getElementById('co').textContent = data.CO || "-";
-                    document.getElementById('aqi').textContent = data["Predicted AQI"] || "-";
-                })
-                .catch(error => console.error("Error fetching AQI:", error));
-        }
-
-        // Refresh data every 10 seconds
-        setInterval(fetchAQI, 10000);
-        fetchAQI(); // Load data on first page load
-    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
