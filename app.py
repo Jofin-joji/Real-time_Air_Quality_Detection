@@ -76,7 +76,7 @@ def predict_7day_aqi():
             return jsonify({"error": "LSTM model failed to load. Check server logs."})
 
         # ✅ Google Drive file ID
-        file_id = "17rHFjcCUWt9x1iey5i5BLEaRCCfuvrKg"
+        file_id = "google_sheet_id"
         file_path = "aqi_test_data.csv"
 
         # ✅ Download dataset if not available
