@@ -41,9 +41,9 @@ except Exception as e:
 latest_data = {}
 
 # Email configuration
-SENDER_EMAIL = "kid001creative@gmail.com"  # Replace with your email
-SENDER_PASSWORD = "imoe yets ptjj grdo"  # Replace with your password or App Password if using Gmail
-RECEIVER_EMAIL = "kid0002creative@gmail.com"  # Replace with recipient email
+SENDER_EMAIL = "senters_email"  # Replace with your email
+SENDER_PASSWORD = "app password"  # Replace with your password or App Password if using Gmail
+RECEIVER_EMAIL = "receivers email"  # Replace with recipient email
 
 # Rate limiting variables
 last_email_time = 0  # Initialize last email time
@@ -51,7 +51,7 @@ EMAIL_INTERVAL = 30 * 60  # 30 minutes in seconds
 
 # Initialize Gemini API
 try:
-    GOOGLE_API_KEY = "AIzaSyBBRfLUx8CRebFItO20Uuvhz0zA6mMeYpE"  # Replace with your actual Gemini API key HERE! - VERY RISKY
+    GOOGLE_API_KEY = "gemini_api_key"  # Replace with your actual Gemini API key HERE! - VERY RISKY
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Or 'gemini-1.5-pro-latest'
     print("✅ Gemini API initialized successfully!")

@@ -1,4 +1,4 @@
-const apiKey = "83b133960256f36b41fab9d2508242c0"; // Replace with YOUR API KEY
+const apiKey = "api_key_openweathermap"; // Replace with YOUR API KEY
 
 let initialAqiValue; // Store the initial AQI value
 let aqiUpdateTimeout; // Store the timeout ID
