@@ -1,4 +1,4 @@
-const apiKey = "YOUR_API_KEY"; // Replace with YOUR API KEY
+const apiKey = "83b133960256f36b41fab9d2508242c0"; // Replace with YOUR API KEY
 
 let initialAqiValue; // Store the initial AQI value
 let aqiUpdateTimeout; // Store the timeout ID
@@ -24,7 +24,6 @@ async function fetchWeatherData() {
                 console.error("Incomplete weather data received:", data);
                 document.getElementById("temperature").textContent = "Error";
                 document.getElementById("humidity").textContent = "Error";
-                document.getElementById("pressure").textContent = "Error";
             }
         } else {
             console.error("Error fetching weather data:", data.message);
@@ -77,6 +76,9 @@ async function fetchSensorData() {
             }, 3600000); // 3600000 milliseconds = 1 hour
 
         }
+
+        // Call Gemini API to get recommendations
+        fetchGeminiResponse(aqiValue);
 
     } catch (error) {
         console.error("Error fetching sensor data:", error);
@@ -166,12 +168,145 @@ async function fetch7DayForecast() {
         console.error("Error fetching 7-day forecast:", error);
     }
 }
+async function fetchAndVisualizeAqiTestData() {
+    try {
+        const response = await fetch("/aqi-test-data");
+        const data = await response.json();
+
+        if (data.error) {
+            console.error("Error fetching aqi test data:", data.error);
+            return;
+        }
+
+        const dates = data.dates;
+        const pm25 = data.pm25;
+        const pm10 = data.pm10;
+        const nox = data.nox;
+        const nh3 = data.nh3;
+        const co = data.co;
+        const benzene = data.benzene;
+
+        // Create the chart using Chart.js
+        const ctx = document.getElementById('pollutantChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: 'PM2.5',
+                        data: pm25,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'PM10',
+                        data: pm10,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'NOx',
+                        data: nox,
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'NH3',
+                        data: nh3,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'CO',
+                        data: co,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'Benzene',
+                        data: benzene,
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Pollutant Level'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'aqi_test_data.csv Pollutant Levels'
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Error fetching or visualizing pollutant data:", error);
+    }
+}
+// New function to fetch Gemini response
+async function fetchGeminiResponse(aqiValue) {
+    try {
+        const response = await fetch("/get-gemini-response", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ aqi: aqiValue }),
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            console.error("Error fetching Gemini response:", data.error);
+            document.getElementById("gemini-response").textContent = "Error fetching recommendations.";
+        } else {
+            // Format the Gemini response as a bulleted list
+            const recommendations = data.response.split('\n'); // Split response into lines
+            let formattedResponse = "<ul>";
+            recommendations.forEach(recommendation => {
+                if (recommendation.trim() !== "") {  // Ignore empty lines
+                    formattedResponse += `<li>${recommendation.trim()}</li>`; // Add each line as a list item
+                }
+            });
+            formattedResponse += "</ul>";
+            document.getElementById("gemini-response").innerHTML = formattedResponse; // Display the formatted response
+        }
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        document.getElementById("gemini-response").textContent = "Error calling recommendation service.";
+    }
+}
 
 // Call the functions to fetch data when the page loads
 window.onload = () => {
     fetchWeatherData();
     fetchSensorData();
     fetch7DayForecast();
+    fetchAndVisualizeAqiTestData(); // Call the new function
 
     // Refresh sensor data every 10 seconds (adjust as needed)
     setInterval(fetchSensorData, 10000);
