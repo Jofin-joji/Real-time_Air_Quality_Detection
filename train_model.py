@@ -22,7 +22,7 @@ except FileNotFoundError:
 
 print("Initial dataset shape:", df.shape)
 
-# Handle missing values (using dropna as in the original, but be mindful if data loss is significant)
+# Handle missing values 
 initial_rows = len(df)
 df.dropna(inplace=True)
 final_rows = len(df)
@@ -34,7 +34,7 @@ if df.empty:
     exit()
 
 # Define features (X) and target (y)
-# Ensure column names exactly match your CSV header
+
 features = ["PM2.5", "PM10", "NOx", "Benzene", "NH3", "CO"]
 target = "AQI"
 
