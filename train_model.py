@@ -10,7 +10,7 @@ from scipy.stats import randint
 DATA_FILE = "data.csv"
 MODEL_SAVE_PATH = "aqi_model.pkl"
 TEST_SIZE = 0.2
-RANDOM_STATE = 42 # Ensures reproducibility
+RANDOM_STATE = 42 
 
 # --- 1. Load and Prepare Data ---
 print(f"Loading data from {DATA_FILE}...")
